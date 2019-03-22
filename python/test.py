@@ -7,15 +7,20 @@ d = ds.t.isel()
 
 pprint(ds.to_dict(data=False))
 
+''' all variables listed'''
 print(dict(ds.variables.mapping).keys())
+
+''' time as a dict listed'''
 print(ds.time.to_dict())
-print(ds.time.data)
-print(ds.step.data)
-print(dict(ds.coords.variables.mapping).keys())
 
-#print(ds.coords.variables)
+''' all coordinates without central data variable'''
+for k in dict(ds.coords.variables.mapping):
+    print(k)
+    print(ds.variables[k].data)
 
-#print(ds.data_vars.variables.mapping)
+''' key variable is shown t'''
+for k in dict(ds.data_vars.variables.mapping).keys():
+    print(k)
 
 #print(ds)
 #print('-----')
