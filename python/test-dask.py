@@ -14,6 +14,6 @@ y = x + x.T
 z = y[::2, 5000:].mean(axis=1)
 print(z.compute())
 
-%time y.sum().compute()
+y.sum().compute()
 
 
