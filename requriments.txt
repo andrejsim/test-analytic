@@ -1,2 +1,3 @@
 xarray
 cfgrib
+dask[array]

@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from pprint import pprint
 
 ds = cfgrib.open_dataset('../data/20190204T070000Z_TT.grb')
-d = ds.t.isel()
+d = ds.t #.isel()
 
 pprint(ds.to_dict(data=False))
 
@@ -25,7 +25,10 @@ for k in dict(ds.data_vars.variables.mapping).keys():
 #print(ds)
 #print('-----')
 #print(d)
+plt.figure(1)
+d.sel().plot()
 
-d.plot()
+d.sel(longitude=slice(10, 20), latitude=slice(50, 60)).plot()
+
 plt.show()
 
