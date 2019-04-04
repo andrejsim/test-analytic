@@ -1,0 +1,52 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "accessVisibility": "public",
+        "countryIsoCode": "DE",
+        "provider": "DWD",
+        "hasForecastData": true,
+        "wmoCountryId": 69,
+        "meteoGroupStationId": 10020,
+        "name": "List/Sylt",
+        "hasObservationData": true,
+        "stationTimeZoneName": "Europe/Berlin",
+        "type": "WMO"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.4125,
+          55.0112,
+          26
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "accessVisibility": "public",
+        "icaoCode": "ETML",
+        "countryIsoCode": "DE",
+        "provider": "DWD/BuWe",
+        "hasForecastData": true,
+        "wmoCountryId": 69,
+        "meteoGroupStationId": 10067,
+        "name": "Marienleuchte",
+        "hasObservationData": true,
+        "stationTimeZoneName": "Europe/Berlin",
+        "type": "WMO"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.2406,
+          54.4936,
+          5
+        ]
+      }
+    }
+  ]
+}

@@ -1,3 +1,4 @@
 xarray
 cfgrib
 dask[array]
+geojson-2.4.1
