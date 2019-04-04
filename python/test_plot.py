@@ -26,9 +26,18 @@ for k in dict(ds.data_vars.variables.mapping).keys():
 #print('-----')
 #print(d)
 plt.figure(1)
-d.sel().plot()
+fig, axes = plt.subplots(nrows=2)
 
-d.sel(longitude=slice(10, 20), latitude=slice(50, 60)).plot()
+# plot1
+d.sel().plot(ax=axes[0])
 
+#plot2
+#d.sel(longitude=slice(0, 30), latitude=slice(40, 60)).plot(ax=axes[1])
+
+#plot3
+d.sel(longitude=slice(-90, 90), latitude=slice(-90, 90)).plot(ax=axes[1])
+
+
+plt.tight_layout()
 plt.show()
 

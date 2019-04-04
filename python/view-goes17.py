@@ -4,7 +4,7 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 
-
+# https://registry.opendata.aws/
 
 #http://edc.occ-data.org/goes16/python/#initial-radiance-plot
 
@@ -54,4 +54,4 @@ plt.show()
 
 
 # dipper
-https://github.com/occ-data/goes16-jupyter
+# https://github.com/occ-data/goes16-jupyter
