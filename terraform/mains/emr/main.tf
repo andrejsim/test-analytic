@@ -1,3 +1,11 @@
+variable "cluster_name" {
+  default = "df-spark-1"
+}
+
+provider "aws" {
+  region     = "eu-west-1"
+}
+
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
 }
@@ -23,37 +31,36 @@ resource "aws_security_group" "sg" {
     protocol    = "-1"
     # Please restrict your ingress to only necessary IPs and ports.
     # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-    cidr_blocks = "10.0.0.0/16" # add a CIDR block here
+    cidr_blocks = ["10.0.0.0/16"] # add a CIDR block here
   }
 
   egress {
     from_port       = 0
     to_port         = 0
     protocol        = "-1"
-    cidr_blocks     = ["0.0.0.0/0"]
+    cidr_blocks     = ["10.0.0.0/16"]
     prefix_list_ids = ["pl-12c4e678"]
   }
 }
 
 resource "aws_iam_role" "iam_emr_service_role" {
-  name = "datafabric_iam_emr_service_role"
+  name = "${var.cluster_name}-${terraform.env}-service"
 
   assume_role_policy = <<EOF
 {
-  "Action": "iam:PassRole",
-  "Effect": "Allow",
-  "Resource": [
-    "arn:aws:iam::*:role/EMR_DefaultRole",
-    "arn:aws:iam::*:role/EMR_EC2_DefaultRole",
-    "arn:aws:iam::*:role/EMR_AutoScaling_DefaultRole"
+  "Version": "2008-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "elasticmapreduce.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
   ]
 }
 EOF
-
-  tags = {
-    created = "terraform"
-    user    = "datafabric"
-  }
 }
 
 resource "aws_iam_instance_profile" "emr_profile" {
