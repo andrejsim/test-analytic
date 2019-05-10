@@ -6,88 +6,79 @@ provider "aws" {
   region     = "eu-west-1"
 }
 
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+//resource "aws_vpc" "main" {
+//  cidr_block = "10.0.0.0/16"
+//}
+//
+//resource "aws_subnet" "main" {
+//  vpc_id     = "${aws_vpc.main.id}"
+//  cidr_block = "10.0.1.0/24"
+//
+//  tags = {
+//    name = "${var.cluster_name}"
+//  }
+//}
+//
+//resource "aws_security_group" "sg" {
+//  name        = "allow_tls"
+//  description = "Allow TLS inbound traffic"
+//  vpc_id      = "${aws_vpc.main.id}"
+//
+//  ingress {
+//    # TLS (change to whatever ports you need)
+//    from_port   = 443
+//    to_port     = 443
+//    protocol    = "-1"
+//    # Please restrict your ingress to only necessary IPs and ports.
+//    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
+//    cidr_blocks = ["10.0.0.0/16"] # add a CIDR block here
+//  }
+//
+//  egress {
+//    from_port       = 0
+//    to_port         = 0
+//    protocol        = "-1"
+//    cidr_blocks     = ["10.0.0.0/16"]
+//    prefix_list_ids = ["pl-12c4e678"]
+//  }
+//}
+
+
+
+resource "aws_iam_service_linked_role" "iam_emr_service_role" {
+  aws_service_name = "elasticmapreduce.amazonaws.com"
 }
 
-resource "aws_subnet" "main" {
-  vpc_id     = "${aws_vpc.main.id}"
-  cidr_block = "10.0.1.0/24"
 
-  tags = {
-    Name = "Main"
-  }
-}
+//{
+//  "Action": "iam:PassRole",
+//"Effect": "Allow",
+//"Resource": [
+//"arn:aws:iam::*:role/EMR_DefaultRole",
+//"arn:aws:iam::*:role/EMR_EC2_DefaultRole",
+//"arn:aws:iam::*:role/EMR_AutoScaling_DefaultRole"
+//]
+//}
 
-resource "aws_security_group" "sg" {
-  name        = "allow_tls"
-  description = "Allow TLS inbound traffic"
-  vpc_id      = "${aws_vpc.main.id}"
-
-  ingress {
-    # TLS (change to whatever ports you need)
-    from_port   = 443
-    to_port     = 443
-    protocol    = "-1"
-    # Please restrict your ingress to only necessary IPs and ports.
-    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-    cidr_blocks = ["10.0.0.0/16"] # add a CIDR block here
-  }
-
-  egress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    cidr_blocks     = ["10.0.0.0/16"]
-    prefix_list_ids = ["pl-12c4e678"]
-  }
-}
-
-resource "aws_iam_role" "iam_emr_service_role" {
-  name = "${var.cluster_name}-${terraform.env}-service"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2008-10-17",
-  "Statement": [
-    {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "elasticmapreduce.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_instance_profile" "emr_profile" {
-  name = "test_profile"
-  role = "${aws_iam_role.role.name}"
-}
-
-resource "aws_iam_role" "role" {
-  name = "test_role"
-  path = "/"
-
-  assume_role_policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": "sts:AssumeRole",
-            "Principal": {
-               "Service": "ec2.amazonaws.com"
-            },
-            "Effect": "Allow",
-            "Sid": ""
-        }
-    ]
-}
-EOF
-}
+//resource "aws_iam_role" "iam_emr_service_role" {
+//  name = "${var.cluster_name}-${terraform.env}-service"
+//
+//  assume_role_policy = <<EOF
+//{
+//  "Version": "2008-10-17",
+//  "Statement": [
+//    {
+//      "Sid": "",
+//      "Effect": "Allow",
+//      "Principal": {
+//        "Service": "elasticmapreduce.amazonaws.com"
+//      },
+//      "Action": "sts:AssumeRole"
+//    }
+//  ]
+//}
+//EOF
+//}
 
 resource "aws_emr_cluster" "cluster" {
   name          = "emr-test-arn"
@@ -105,12 +96,12 @@ EOF
   termination_protection            = false
   keep_job_flow_alive_when_no_steps = true
 
-  ec2_attributes {
-    subnet_id                         = "${aws_subnet.main.id}"
-    emr_managed_master_security_group = "${aws_security_group.sg.id}"
-    emr_managed_slave_security_group  = "${aws_security_group.sg.id}"
-    instance_profile                  = "${aws_iam_instance_profile.emr_profile.arn}"
-  }
+  //  ec2_attributes {
+  //    subnet_id                         = "${aws_subnet.main.id}"
+  //    emr_managed_master_security_group = "${aws_security_group.sg.id}"
+  //    emr_managed_slave_security_group  = "${aws_security_group.sg.id}"
+  //    instance_profile                  = "${aws_iam_instance_profile.emr_profile.arn}"
+  //  }
 
   instance_group {
     instance_role  = "CORE"
@@ -201,5 +192,5 @@ EOF
     }
   ]
 EOF
-  service_role        = "${aws_iam_role.iam_emr_service_role.arn}"
+  service_role        = "${aws_iam_service_linked_role.iam_emr_service_role.arn}"
 }
