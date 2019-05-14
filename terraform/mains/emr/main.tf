@@ -3,7 +3,7 @@ variable "cluster_name" {
 }
 
 provider "aws" {
-  region     = "eu-west-1"
+  region = "eu-west-1"
 }
 
 //resource "aws_vpc" "main" {
@@ -43,12 +43,9 @@ provider "aws" {
 //  }
 //}
 
-
-
 resource "aws_iam_service_linked_role" "iam_emr_service_role" {
   aws_service_name = "elasticmapreduce.amazonaws.com"
 }
-
 
 //{
 //  "Action": "iam:PassRole",
@@ -84,6 +81,7 @@ resource "aws_emr_cluster" "cluster" {
   name          = "emr-test-arn"
   release_label = "emr-4.6.0"
   applications  = ["Spark"]
+
   additional_info = <<EOF
 {
   "instanceAwsClientConfiguration": {
@@ -107,12 +105,15 @@ EOF
     instance_role  = "CORE"
     instance_type  = "c4.large"
     instance_count = "1"
+
     ebs_config {
       size                 = "40"
       type                 = "gp2"
       volumes_per_instance = 1
     }
-    bid_price          = "0.30"
+
+    bid_price = "0.30"
+
     autoscaling_policy = <<EOF
 {
 "Constraints": {
@@ -148,22 +149,18 @@ EOF
 EOF
   }
   ebs_root_volume_size = 100
-
   master_instance_type = "m5.xlarge"
   core_instance_type   = "m5.xlarge"
   core_instance_count  = 1
-
   tags = {
     role = "rolename"
     env  = "env"
   }
-
   bootstrap_action {
     path = "s3://elasticmapreduce/bootstrap-actions/run-if"
     name = "runif"
     args = ["instance.isMaster=true", "echo running on master node"]
   }
-
   configurations_json = <<EOF
   [
     {
@@ -192,5 +189,5 @@ EOF
     }
   ]
 EOF
-  service_role        = "${aws_iam_service_linked_role.iam_emr_service_role.arn}"
+  service_role = "${aws_iam_service_linked_role.iam_emr_service_role.arn}"
 }
